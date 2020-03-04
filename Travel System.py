@@ -5,7 +5,7 @@ depart_location = [["Auckland", 0], ["Wellington", 50], ["Chirstchurch", 75]]
 
 destination = [["Sydney", 326, 120], ["Tonga", 378, 40], ["Shanghai", 1436, 60], ["London", 2376, 80]]
 
-selection_order = ["Departure location: ", "Departure price:", "Destination: ", "Airfare cost: ", "Nights stayed: ", "Accomodation total: ", "Accomodation Cost: "]
+selection_order = ["Departure location: ", "Connecting flight needed: ", "Departure price (return): $", "Destination: ", "Airfare cost: $", "Nights stayed: ","Cost for 1 night: $", "Accommodation sub-total: $", "Discount applied: ", "Accommodation total: $", "Subtotal (GST Excl): $", "GST: $", "Final cost: $"]
 
 user_selection = []
 
@@ -48,12 +48,14 @@ def night_cost(user_nights, user_destination):
     one_night = (destination[user_destination - 1][2])
     return one_night
  
-def accomodation_discount(accomodation_total, user_nights):
+def accommodation_discount(accommodation_total, user_nights):
     if user_nights >= 3:
-        accomodaiton_final = accomodation_total * 0.8
+        accomodaiton_final = accommodation_total * 0.8
+        user_selection.append("YES")
         return accomodaiton_final
     else:
-        accomodaiton_final = accomodation_total
+        accomodaiton_final = accommodation_total
+        user_selection.append("NO")
         return accomodaiton_final
 
 '''Depart'''
@@ -75,14 +77,19 @@ while depart == True:
 #calculate cost for depart
 depart_cost = find_depart_price(user_depart)
 
-total_cost += depart_cost
+total_cost += (depart_cost * 2)
 
 #find name for depart
 depart_name = find_depart_name(user_depart)
 
-#adds to list or later
+#adds to list for later
 user_selection.append(depart_name)
 
+if depart_cost == 0:
+    user_selection.append("No")
+else:
+    user_selection.append("Yes")
+    
 user_selection.append(depart_cost)
 
 #total
@@ -107,7 +114,8 @@ while find_destination == True:
 
 #destination price
 destination_cost = find_destination_price(user_destination)
-total_cost += destination_cost
+
+total_cost += destination_cost 
 
 #destination name
 destination_name = find_destination_name(user_destination)
@@ -134,17 +142,36 @@ while nights == True:
             
 user_selection.append(user_nights)
 
-night_cost(user_nights, user_destination)
+one_night_total = night_cost(user_nights, user_destination)
 
-one_night = night_cost
+user_selection.append(one_night_total)
 
-accomodation_total = (one_night * user_nights)
+accommodation_total = (one_night_total * user_nights)
 
+user_selection.append(accommodation_total)
 
+accommodation_final = accommodation_discount(accommodation_total,user_nights)
 
+total_cost += accommodation_final
 
+user_selection.append(accommodation_final)
 
-print(user_selection)
+gst_excl = round((total_cost / 1.15),2)
+
+user_selection.append(gst_excl)
+
+gst = round(total_cost - gst_excl)
+
+user_selection.append(gst)
+
+user_selection.append(total_cost)
+
+print ("")
+print ("COST BREAKDOWN")
+print ("")
+
+for i in range(len(user_selection)):
+    print (str(selection_order[i]) + str(user_selection[i]))
     
     
     
