@@ -1,25 +1,29 @@
 '''Program is a travel price system'''
 
+#list of depart location / connection price / connection needed
+depart_location = [["Auckland", 0, "No"], ["Wellington", 50, "Yes"], ["Chirstchurch", 75, "Yes"]]
 
-depart_location = [["Auckland", 0], ["Wellington", 50], ["Chirstchurch", 75]]
-
+#list for destination / flight price / accomodation for 1 night price
 destination = [["Sydney", 326, 120], ["Tonga", 378, 40], ["Shanghai", 1436, 60], ["London", 2376, 80]]
 
+#list for user's selections for breakdown
 selection_order = ["Departure location: ", "Connecting flight needed: ", "Departure price (return): $", "Destination: ", "Airfare cost: $", "Nights stayed: ","Cost for 1 night: $", "Accommodation sub-total: $", "Discount applied: ", "Accommodation total: $", "Subtotal (GST Excl): $", "GST: $", "Final cost: $"]
 
+#empty list for user selectinos
 user_selection = []
 
+#prices added for total cost
 total_cost = 0
 
 def display_depart():
     '''Function to display departure location list'''
     for i in range (len(depart_location)):
-        print (i+1,".", depart_location[i][0])
+        print (i+1,".", depart_location[i][0] + " - Connection flight needed: " + str(depart_location[i][2]) + " - $" + str(depart_location[i][1]), "One way")
         
 def display_destination():
     '''Function to display list of departure location'''
     for i in range (len(destination)):
-        print (i+1, ".", destination[i][0])
+        print (i+1, ".", destination[i][0], "- $" + str(destination[i][1]), "Return")
 
 def find_depart_price(user_depart):
     '''Function to find cost of departure'''
@@ -27,6 +31,7 @@ def find_depart_price(user_depart):
     return depart_cost
 
 def find_depart_name(user_depart):
+    '''Function to find the name of departure location'''
     depart_name = (depart_location[(user_depart - 1)][0]);
     return depart_name    
 
@@ -37,18 +42,22 @@ def find_destination_price(user_destination):
     return destination_cost
 
 def find_destination_name(user_destination):
+    '''Function to find the name of the selected destination'''
     destination_name = (destination[(user_destination - 1)][0]);
     return destination_name
 
 def display_sub_total():
+    '''Displays the subtotal'''
     print ("Sub-total: $" + str(total_cost))
 
     
 def night_cost(user_nights, user_destination):
+    '''Finds the cost for one night'''
     one_night = (destination[user_destination - 1][2])
     return one_night
  
 def accommodation_discount(accommodation_total, user_nights):
+    '''Sees if number of nights is eligable for discount'''
     if user_nights >= 3:
         accomodaiton_final = accommodation_total * 0.8
         user_selection.append("YES")
@@ -142,8 +151,10 @@ while nights == True:
             
 user_selection.append(user_nights)
 
+#finds one night
 one_night_total = night_cost(user_nights, user_destination)
 
+#adds one night cost to list
 user_selection.append(one_night_total)
 
 accommodation_total = (one_night_total * user_nights)
@@ -155,6 +166,8 @@ accommodation_final = accommodation_discount(accommodation_total,user_nights)
 total_cost += accommodation_final
 
 user_selection.append(accommodation_final)
+
+#Calculations for subtotals
 
 gst_excl = round((total_cost / 1.15),2)
 
